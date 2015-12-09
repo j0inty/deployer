@@ -1,68 +1,104 @@
 <?php
+
 /* (c) Anton Medvedev <anton@elfet.ru>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Deployer\Type;
 
 class Result
 {
-    /**
-     * @var string
-     */
-    private $output;
+	/**
+	 * Output delimiter used by toArray()
+	 * 
+	 * @var string
+	 */
+	private $delim = "\n";
 
-    /**
-     * @param string $output
-     */
-    public function __construct($output)
-    {
-        $this->output = $output;
-    }
+	/**
+	 * @var string
+	 */
+	private $output;
 
-    /**
-     * @return string
-     */
-    public function getOutput()
-    {
-        return $this->output;
-    }
+	/**
+	 * @param string $output
+	 * @param string $delim
+	 */
+	public function __construct( $output, $delim = NULL )
+	{
+		if ( $delim !== NULL )
+		{
+			$this->delim = $delim;
+		}
+		$this->output = $output;
+	}
 
-    /**
-     * @return string
-     */
-    public function toString()
-    {
-        return rtrim($this->output);
-    }
+	/**
+	 * Get the raw output string.
+	 * 
+	 * @return string
+	 */
+	public function getOutput()
+	{
+		return $this->output;
+	}
 
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->toString();
-    }
+	/**
+	 * @see Result::__toString()
+	 * 
+	 * @return string
+	 */
+	public function toString()
+	{
+		return (string) $this;
+	}
 
-    /**
-     * @return bool
-     */
-    public function toBool()
-    {
-        if ('true' === $this->toString()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+	/**
+	 * Get the output string right trimmed.
+	 * 
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return rtrim( $this->output );
+	}
 
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        return explode("\n", $this->toString());
-    }
+	/**
+	 * Convert a string to bool.
+	 * 
+	 * Example: 'TRUE', 'false', 'yEs', 'No', 'On', 'OFF', '1', 0, 1
+	 * 
+	 * @param mixed $var
+	 * 
+	 * @return boolean
+	 */
+	public function toBool( $var )
+	{
+		if ( !is_string( $var ) )
+		{
+			return (bool) $var;
+		}
+		switch ( strtolower( $var ) )
+		{
+			case '1':
+			case 'true':
+			case 'on':
+			case 'yes':
+			case 'y':
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * 
+	 * @param string $delim
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return explode( $this->delim, $this );
+	}
 }

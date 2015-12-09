@@ -69,17 +69,11 @@ class Result
 	 * 
 	 * Example: 'TRUE', 'false', 'yEs', 'No', 'On', 'OFF', '1', 0, 1
 	 * 
-	 * @param mixed $var
-	 * 
 	 * @return boolean
 	 */
-	public function toBool( $var )
+	public function toBool()
 	{
-		if ( !is_string( $var ) )
-		{
-			return (bool) $var;
-		}
-		switch ( strtolower( $var ) )
+		switch ( strtolower( $this ) )
 		{
 			case '1':
 			case 'true':
